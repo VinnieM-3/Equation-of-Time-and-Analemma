@@ -1,3 +1,4 @@
+from __future__ import division
 import numpy as np
 from math import pi, radians, pow, sin, asin, cos
 
@@ -107,4 +108,3 @@ def analemma_gen(e, p_degs, axis_norm_degs, peri_day, orb_per):
     days, decs = dec_gen(e, axis_norm_degs, orb_per, 1, 366)
     _, mins = eot_gen(e, p_degs, axis_norm_degs, peri_day, orb_per, 1, 366)
     return days, decs, mins
-
