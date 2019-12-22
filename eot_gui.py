@@ -127,12 +127,12 @@ def scale_update(val):
 
 
 ax_slider_e = plt.subplot(gs.new_subplotspec((13, 0), colspan=1, rowspan=1))
-slider_e = Slider(ax_slider_e, 'Eccentricity', 0.00, 0.03, valinit=e, valstep=.001, valfmt='%5.4f',
+slider_e = Slider(ax_slider_e, 'Eccentricity', 0.00, 0.05, valinit=e, valfmt='%5.4f',
                   facecolor='blue', dragging=True)
 slider_e.on_changed(update)
 
 ax_slider_obl = plt.subplot(gs.new_subplotspec((14, 0), colspan=1, rowspan=1))
-slide_obl_deg = Slider(ax_slider_obl, 'Obliquity', 0.0, 45.0, valinit=axis_norm_degs, valstep=0.1, valfmt='%4.2f',
+slide_obl_deg = Slider(ax_slider_obl, 'Obliquity', 0.0, 45.0, valinit=axis_norm_degs, valfmt='%4.2f',
                        facecolor='green', dragging=True)
 slide_obl_deg.on_changed(update)
 
