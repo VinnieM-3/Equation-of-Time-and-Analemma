@@ -7,10 +7,10 @@ from math import pi, radians, pow, sin, asin, cos
 #           Declination of the Sun as seen from Earth
 #           Calculations, 3rd "more accurate" formula
 #
-# [2]   EQUATION OF TIME — PROBLEM IN ASTRONOMY
-#           M. Müller
-#           Gymnasium Münchenstein Grellingerstrasse 5,
-#           4142 Münchenstein, Switzerland
+# [2]   EQUATION OF TIME - PROBLEM IN ASTRONOMY
+#           M. Muller
+#           Gymnasium Munchenstein Grellingerstrasse 5,
+#           4142 Munchenstein, Switzerland
 
 
 # equation of time, based on source [2]
