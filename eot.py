@@ -45,11 +45,7 @@ def eot_gen(e, p_degs, axis_norm_degs, peri_day, orb_per, day_start, day_end):
     time_mins = (24 * 60) / (2 * pi)
 
     for d in days:
-
-        d_offset = d + 0.5 - peri_day
-
-        m = 2*pi*(d_offset/orb_per)
-
+        m = 2*pi*((d + 0.5 - peri_day)/orb_per)
         mins.append(-(tan2_1_4e2*sin(2*(m+p))+e2*sin(m) -
                     tan2_2e*sin(m+2*p)+tan2_2e*sin(3*m+2*p) +
                     tan4_1_2*sin(4*(m+p))+e2_5_4*sin(2*m)-tan4_2e*sin((3*m)+(4*p)) +
@@ -83,13 +79,12 @@ def obl_gen(p, axis_norm_rads, peri_day, orb_per, day_start, day_end):
 def dec_gen(e, axis_norm_degs, orb_per, day_start, day_end):
     decs = []
     days = np.arange(day_start, (day_end+1))
+    sin_axis_norm = sin(radians(axis_norm_degs))
+    ratio360 = 360 / orb_per
+    ratio_pi_e = (360 / pi) * e
 
     for d in days:
         d_offset = d - 0.5
-        sin_axis_norm = sin(radians(axis_norm_degs))
-        ratio360 = 360/orb_per
-        ratio_pi_e = (360/pi)*e
-
         decs.append(-(asin(sin_axis_norm *
                            cos(radians(ratio360*(d_offset+10) +
                                ratio_pi_e*sin(radians(ratio360*(d_offset-2))))))*360/(2*pi)))
