@@ -9,10 +9,10 @@ from matplotlib.widgets import Slider, RadioButtons
 #           Declination of the Sun as seen from Earth
 #           Calculations, 3rd "more accurate" formula
 #
-# [2]   EQUATION OF TIME — PROBLEM IN ASTRONOMY
-#           M. Müller
-#           Gymnasium Münchenstein Grellingerstrasse 5,
-#           4142 Münchenstein, Switzerland
+# [2]   EQUATION OF TIME - PROBLEM IN ASTRONOMY
+#           M. Muller
+#           Gymnasium Munchenstein Grellingerstrasse 5,
+#           4142 Munchenstein, Switzerland
 
 
 e = 0.01671022                      # earth orbit eccentricity
