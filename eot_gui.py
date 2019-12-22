@@ -27,7 +27,7 @@ cal_dict = {1: 'Jan 1', 32: 'Feb 1', 60: 'Mar 1', 91: 'Apr 1', 121: 'May 1', 152
 scaling_on = False
 
 fig = plt.figure(figsize=(10, 6), num='Equation of Time')
-plt.subplots_adjust(wspace=0.3)
+plt.subplots_adjust(left=0.100, right=.950, wspace=0.3)
 gs = GridSpec(20, 2, figure=fig)
 
 eot_x, eot_y = eot.eot_gen(e, p_degs, axis_norm_degs, peri_day, orb_per, 1, 365)
