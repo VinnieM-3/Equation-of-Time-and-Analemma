@@ -27,13 +27,13 @@ cal_dict = {1: 'Jan 1', 32: 'Feb 1', 60: 'Mar 1', 91: 'Apr 1', 121: 'May 1', 152
 scaling_on = False
 
 fig = plt.figure(figsize=(10, 6), num='Equation of Time')
-plt.subplots_adjust(left=0.100, right=.950, wspace=0.3)
-gs = GridSpec(20, 2, figure=fig)
+plt.subplots_adjust(left=0.100, right=.950, wspace=0.1)
+gs = GridSpec(20, 20, figure=fig)
 
 eot_x, eot_y = eot.eot_gen(e, p_degs, axis_norm_degs, peri_day, orb_per, 1, 365)
 _, obl_y = eot.obl_gen(p_degs, axis_norm_degs, peri_day, orb_per, 1, 365)
 _, ecc_y = eot.ecc_gen(e, p_degs, peri_day, orb_per, 1, 365)
-ax_eot = plt.subplot(gs.new_subplotspec((0, 0), colspan=1, rowspan=10))
+ax_eot = plt.subplot(gs.new_subplotspec((0, 0), colspan=9, rowspan=10))
 ax_eot.set_title("Equation of Time")
 ax_eot.minorticks_on()
 ax_eot.grid(which='major', linestyle='-', linewidth=0.5, color='grey')
@@ -54,7 +54,7 @@ for d, dt_lbl in cal_dict.items():
 
 
 days, dec_y, min_x = eot.analemma_gen(e, p_degs, axis_norm_degs, peri_day, orb_per)
-ax_analemma = plt.subplot(gs.new_subplotspec((0, 1), colspan=1, rowspan=20))
+ax_analemma = plt.subplot(gs.new_subplotspec((0, 12), colspan=9, rowspan=20))
 ax_analemma.set_title("Analemma")
 ax_analemma.minorticks_on()
 ax_analemma.grid(which='major', linestyle='-', linewidth=0.5, color='grey')
@@ -126,17 +126,17 @@ def scale_update(val):
         scaling_on = False
 
 
-ax_slider_e = plt.subplot(gs.new_subplotspec((13, 0), colspan=1, rowspan=1))
+ax_slider_e = plt.subplot(gs.new_subplotspec((13, 1), colspan=8, rowspan=1))
 slider_e = Slider(ax_slider_e, 'Eccentricity', 0.00, 0.05, valinit=e, valfmt='%5.4f',
                   facecolor='blue', dragging=True)
 slider_e.on_changed(update)
 
-ax_slider_obl = plt.subplot(gs.new_subplotspec((14, 0), colspan=1, rowspan=1))
+ax_slider_obl = plt.subplot(gs.new_subplotspec((15, 1), colspan=8, rowspan=1))
 slide_obl_deg = Slider(ax_slider_obl, 'Obliquity', 0.0, 45.0, valinit=axis_norm_degs, valfmt='%4.2f',
                        facecolor='green', dragging=True)
 slide_obl_deg.on_changed(update)
 
-ax_radio_scale = plt.subplot(gs.new_subplotspec((16, 0), colspan=1, rowspan=3))
+ax_radio_scale = plt.subplot(gs.new_subplotspec((17, 1), colspan=4, rowspan=3))
 radio_scale = RadioButtons(ax_radio_scale, ('Auto Scaling On', 'Auto Scaling Off'), active=1)
 radio_scale.on_clicked(scale_update)
 
