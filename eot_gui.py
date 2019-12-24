@@ -1,7 +1,7 @@
 import eot
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
-from matplotlib.widgets import Slider, RadioButtons
+from matplotlib.widgets import Slider, RadioButtons, Button
 
 # Sources of formulas:
 # [1]   Position of the Sun
@@ -126,6 +126,11 @@ def scale_update(val):
         scaling_on = False
 
 
+def reset(event):
+    slider_e.reset()
+    slide_obl_deg.reset()
+
+
 ax_slider_e = plt.subplot(gs.new_subplotspec((13, 1), colspan=8, rowspan=1))
 slider_e = Slider(ax_slider_e, 'Eccentricity', 0.00, 0.05, valinit=e, valfmt='%5.4f',
                   facecolor='blue', dragging=True)
@@ -139,5 +144,9 @@ slide_obl_deg.on_changed(update)
 ax_radio_scale = plt.subplot(gs.new_subplotspec((17, 1), colspan=4, rowspan=3))
 radio_scale = RadioButtons(ax_radio_scale, ('Auto Scaling On', 'Auto Scaling Off'), active=1)
 radio_scale.on_clicked(scale_update)
+
+ax_reset = plt.subplot(gs.new_subplotspec((17, 6), colspan=2, rowspan=1))
+reset_button = Button(ax_reset, 'Reset', color='lightgray', hovercolor='dimgray')
+reset_button.on_clicked(reset)
 
 plt.show()
