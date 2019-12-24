@@ -142,7 +142,7 @@ slide_obl_deg = Slider(ax_slider_obl, 'Obliquity', 0.0, 45.0, valinit=axis_norm_
 slide_obl_deg.on_changed(update)
 
 ax_radio_scale = plt.subplot(gs.new_subplotspec((17, 1), colspan=4, rowspan=3))
-radio_scale = RadioButtons(ax_radio_scale, ('Auto Scaling On', 'Auto Scaling Off'), active=1)
+radio_scale = RadioButtons(ax_radio_scale, ('Auto Scaling On', 'Auto Scaling Off'), active=1, activecolor='black')
 radio_scale.on_clicked(scale_update)
 
 ax_reset = plt.subplot(gs.new_subplotspec((17, 6), colspan=2, rowspan=1))
