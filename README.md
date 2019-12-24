@@ -1,5 +1,5 @@
 # Equation-of-Time
-Simple Python application to observe effects of obliquity and eccentricity on equation of time and analemma.  The sliders can be used to vary the obliquity and eccentricity.
+Simple Python application to observe effects of obliquity, eccentricity, and the angle between the solstice (winter in northern hemisphere) and perihelion on equation of time and analemma.  The sliders can be used to vary the obliquity, eccentricity, and solstice/perihelion angle.
 
 Requires: Python (tested on 2.7 and 3.7), numpy, and matplotlib.
  
