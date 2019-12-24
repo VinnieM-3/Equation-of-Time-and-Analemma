@@ -3,23 +3,12 @@ import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from matplotlib.widgets import Slider, RadioButtons, Button
 
-# Sources of formulas:
-# [1]   Position of the Sun
-#           https://en.wikipedia.org/wiki/Position_of_the_Sun
-#           Declination of the Sun as seen from Earth
-#           Calculations, 3rd "more accurate" formula
-#
-# [2]   EQUATION OF TIME - PROBLEM IN ASTRONOMY
-#           M. Muller
-#           Gymnasium Munchenstein Grellingerstrasse 5,
-#           4142 Munchenstein, Switzerland
-
 
 e = 0.01671022                      # earth orbit eccentricity
 orb_per = 365.25696                 # earth orbital period
 peri_day = 3.0888                   # calendar day in January of perihelion (~3-5) (decimal/fractional format)
-p_degs = 12.25                      # projection of the axis of the earth onto the plane of the orbit in degrees [2]
-axis_norm_degs = 23.4367            # angle between the earth's axis and the norm of the orbit [2]
+p_degs = 12.25                      # projection of the axis of the earth onto the plane of the orbit in degrees
+axis_norm_degs = 23.4367            # angle between the earth's axis and the norm of the orbit
 
 cal_dict = {1: 'Jan 1', 32: 'Feb 1', 60: 'Mar 1', 91: 'Apr 1', 121: 'May 1', 152: 'Jun 1',
             182: 'Jul 1', 213: 'Aug 1', 244: 'Sep 1', 274: 'Oct 1', 305: 'Nov 1', 335: 'Dec 1'}
@@ -74,6 +63,7 @@ for d, dt_lbl in cal_dict.items():
 def update(val):
     e = slider_e.val
     axis_norm_degs = slide_obl_deg.val
+    p_degs = slide_sol_peri.val
 
     _, eot_y = eot.eot_gen(e, p_degs, axis_norm_degs, peri_day, orb_per, 1, 365)
     _, obl_y = eot.obl_gen(p_degs, axis_norm_degs, peri_day, orb_per, 1, 365)
@@ -129,6 +119,7 @@ def scale_update(val):
 def reset(event):
     slider_e.reset()
     slide_obl_deg.reset()
+    slide_sol_peri.reset()
 
 
 ax_slider_e = plt.subplot(gs.new_subplotspec((13, 1), colspan=8, rowspan=1))
@@ -136,12 +127,17 @@ slider_e = Slider(ax_slider_e, 'Eccentricity', 0.00, 0.05, valinit=e, valfmt='%5
                   facecolor='blue', dragging=True)
 slider_e.on_changed(update)
 
-ax_slider_obl = plt.subplot(gs.new_subplotspec((15, 1), colspan=8, rowspan=1))
-slide_obl_deg = Slider(ax_slider_obl, 'Obliquity', 0.0, 45.0, valinit=axis_norm_degs, valfmt='%4.2f',
+ax_slider_obl = plt.subplot(gs.new_subplotspec((14, 1), colspan=8, rowspan=1))
+slide_obl_deg = Slider(ax_slider_obl, 'Obliquity (deg)', 0.0, 45.0, valinit=axis_norm_degs, valfmt='%4.2f',
                        facecolor='green', dragging=True)
 slide_obl_deg.on_changed(update)
 
-ax_radio_scale = plt.subplot(gs.new_subplotspec((17, 1), colspan=4, rowspan=3))
+ax_slider_sol_peri = plt.subplot(gs.new_subplotspec((15, 1), colspan=8, rowspan=1))
+slide_sol_peri = Slider(ax_slider_sol_peri, 'Solstice/Peri (deg)', 0.0, 120.0, valinit=p_degs, valfmt='%4.2f',
+                        facecolor='orange', dragging=True)
+slide_sol_peri.on_changed(update)
+
+ax_radio_scale = plt.subplot(gs.new_subplotspec((17, 1), colspan=4, rowspan=2))
 radio_scale = RadioButtons(ax_radio_scale, ('Auto Scaling On', 'Auto Scaling Off'), active=1, activecolor='black')
 radio_scale.on_clicked(scale_update)
 
