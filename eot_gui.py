@@ -16,8 +16,8 @@ cal_dict = {1: 'Jan 1', 32: 'Feb 1', 60: 'Mar 1', 91: 'Apr 1', 121: 'May 1', 152
 scaling_on = False
 
 fig = plt.figure(figsize=(10, 6), num='Equation of Time')
-plt.subplots_adjust(left=0.100, right=.950, wspace=0.1)
-gs = GridSpec(20, 20, figure=fig)
+plt.subplots_adjust(top=.925, left=0.100, right=.950, wspace=0.1)
+gs = GridSpec(22, 20, figure=fig)
 
 eot_x, eot_y = eot.eot_gen(e, p_degs, axis_norm_degs, peri_day, orb_per, 1, 365)
 _, obl_y = eot.obl_gen(p_degs, axis_norm_degs, peri_day, orb_per, 1, 365)
@@ -43,7 +43,7 @@ for d, dt_lbl in cal_dict.items():
 
 
 days, dec_y, min_x = eot.analemma_gen(e, p_degs, axis_norm_degs, peri_day, orb_per)
-ax_analemma = plt.subplot(gs.new_subplotspec((0, 12), colspan=9, rowspan=20))
+ax_analemma = plt.subplot(gs.new_subplotspec((0, 12), colspan=9, rowspan=22))
 ax_analemma.set_title("Analemma")
 ax_analemma.minorticks_on()
 ax_analemma.grid(which='major', linestyle='-', linewidth=0.5, color='grey')
@@ -61,14 +61,15 @@ for d, dt_lbl in cal_dict.items():
 
 
 def update(val):
+    global eot_ann_list, analemma_ann_list
+
     e = slider_e.val
     axis_norm_degs = slide_obl_deg.val
     p_degs = slide_sol_peri.val
 
-    _, eot_y = eot.eot_gen(e, p_degs, axis_norm_degs, peri_day, orb_per, 1, 365)
+    eot_x, eot_y = eot.eot_gen(e, p_degs, axis_norm_degs, peri_day, orb_per, 1, 365)
     _, obl_y = eot.obl_gen(p_degs, axis_norm_degs, peri_day, orb_per, 1, 365)
     _, ecc_y = eot.ecc_gen(e, p_degs, peri_day, orb_per, 1, 365)
-
     eot_line.set_ydata(eot_y)
     ecc_line.set_ydata(ecc_y)
     obl_line.set_ydata(obl_y)
@@ -96,10 +97,24 @@ def update(val):
         analemma_ann_list.append(ann)
 
     if scaling_on:
-        ax_analemma.relim()
-        ax_analemma.autoscale_view()
-        ax_eot.relim()
-        ax_eot.autoscale_view()
+        xmin = min(eot_x)
+        xmax = max(eot_x)
+        ymin = min(eot_y + obl_y + ecc_y)
+        ymax = max(eot_y + obl_y + ecc_y)
+        if xmax != xmin:
+            ax_eot.set_xlim(xmin - 0.1 * (xmax - xmin), xmax + 0.1 * (xmax - xmin))
+        if ymax != ymin:
+            ax_eot.set_ylim(ymin - 0.1 * (ymax - ymin), ymax + 0.1 * (ymax - ymin))
+        xmin = min(min_x)
+        xmax = max(min_x)
+        ymin = min(dec_y)
+        ymax = max(dec_y)
+        if xmax != xmin:
+            ax_analemma.set_xlim(xmin - 0.1 * (xmax - xmin), xmax + 0.1 * (xmax - xmin))
+        if ymax != ymin:
+            ax_analemma.set_ylim(ymin - 0.1 * (ymax - ymin), ymax + 0.1 * (ymax - ymin))
+
+    fig.canvas.draw_idle()
 
 
 def scale_update(val):
@@ -107,11 +122,7 @@ def scale_update(val):
 
     if val == 'Auto Scaling On':
         scaling_on = True
-        ax_analemma.relim()
-        ax_analemma.autoscale_view()
-        ax_eot.relim()
-        ax_eot.autoscale_view()
-        fig.canvas.draw_idle()
+        update(val)
     else:
         scaling_on = False
 
@@ -137,7 +148,7 @@ slide_sol_peri = Slider(ax_slider_sol_peri, 'Solstice/Peri (deg)', 0.0, 120.0, v
                         facecolor='orange', dragging=True)
 slide_sol_peri.on_changed(update)
 
-ax_radio_scale = plt.subplot(gs.new_subplotspec((17, 1), colspan=4, rowspan=2))
+ax_radio_scale = plt.subplot(gs.new_subplotspec((17, 1), colspan=4, rowspan=5))
 radio_scale = RadioButtons(ax_radio_scale, ('Auto Scaling On', 'Auto Scaling Off'), active=1, activecolor='black')
 radio_scale.on_clicked(scale_update)
 
