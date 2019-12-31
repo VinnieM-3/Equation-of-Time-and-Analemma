@@ -1,5 +1,4 @@
 from __future__ import division
-import numpy as np
 from math import pi, radians, pow, sin, asin, cos
 
 # Sources of formulas:
@@ -21,14 +20,11 @@ from math import pi, radians, pow, sin, asin, cos
 #   axis_norm_degs  angle between the earth's axis and the norm of the orbit in degrees (23.4367)
 #   peri_day        calendar day in January of perihelion in decimal/fractional format (~3-5)
 #   orb_per         earth orbital period (365.25696)
-#   day_start       day of year to start calculation
-#   day_end         day of year to end calculation
+#   day_nums        numpy array of day numbers
 # outputs:
-#   days           integer list of days based on start and end dates input
-#   mins           equation of time list in minutes
-def eot_gen(e, p_degs, axis_norm_degs, peri_day, orb_per, day_start, day_end):
-    mins = []
-    days = np.arange(day_start, (day_end+1))
+#   eot_mins        equation of time list in minutes
+def eot_gen(e, p_degs, axis_norm_degs, peri_day, orb_per, day_nums):
+    eot_mins = []
 
     p = radians(p_degs)
     axis_norm_rads = radians(axis_norm_degs)
@@ -41,30 +37,30 @@ def eot_gen(e, p_degs, axis_norm_degs, peri_day, orb_per, day_start, day_end):
     e2_5_4 = (5/4)*(pow(e, 2))
     tan4_2e = 2*e*pow(tan2, 2)
     tan2_2e_13_4 = (13/4)*(pow(e, 2))*tan2
-    tan6_1_3 = (1/3)*pow(tan2, 2)*tan2
+    tan6_1_3 = (1/3)*pow(tan2, 3)
 
     time_mins = (24 * 60) / (2 * pi)
 
-    for d in days:
-        m = 2*pi*((d + 0.5 - peri_day)/orb_per)  # calculation based on noon UT of day
-        mins.append(-(tan2_1_4e2*sin(2*(m+p))+e2*sin(m) -
-                    tan2_2e*sin(m+2*p)+tan2_2e*sin(3*m+2*p) +
-                    tan4_1_2*sin(4*(m+p))+e2_5_4*sin(2*m)-tan4_2e*sin((3*m)+(4*p)) +
-                    tan4_2e*sin((5*m)+(4*p))+tan2_2e_13_4*sin(4*m+2*p) +
-                    tan6_1_3*sin(6*(m+p)))*time_mins)
-    return days, mins
+    for d in day_nums:
+        m = 2*pi*((d - peri_day)/orb_per)
+        eot_mins.append(-(tan2_1_4e2*sin(2*(m+p))+e2*sin(m) -
+                        tan2_2e*sin(m+2*p)+tan2_2e*sin(3*m+2*p) +
+                        tan4_1_2*sin(4*(m+p))+e2_5_4*sin(2*m)-tan4_2e*sin((3*m)+(4*p)) +
+                        tan4_2e*sin((5*m)+(4*p))+tan2_2e_13_4*sin(4*m+2*p) +
+                        tan6_1_3*sin(6*(m+p)))*time_mins)
+    return eot_mins
 
 
 # Eccentricity part of Equation of Time, based on source [2]
 # this is a convenience function where axis_norm_rads is set to 0
-def ecc_gen(e, p, peri_day, orb_per, day_start, day_end):
-    return eot_gen(e, p, 0, peri_day, orb_per, day_start, day_end)
+def ecc_gen(e, p, peri_day, orb_per, day_nums):
+    return eot_gen(e, p, 0, peri_day, orb_per, day_nums)
 
 
 # Obliquity part of Equation of Time, based on source [2]
 # this is a convenience function where e is set to 0
-def obl_gen(p, axis_norm_rads, peri_day, orb_per, day_start, day_end):
-    return eot_gen(0, p, axis_norm_rads, peri_day, orb_per, day_start, day_end)
+def obl_gen(p, axis_norm_rads, peri_day, orb_per, day_nums):
+    return eot_gen(0, p, axis_norm_rads, peri_day, orb_per, day_nums)
 
 
 # Sun's declination, based on source [1]
@@ -72,25 +68,22 @@ def obl_gen(p, axis_norm_rads, peri_day, orb_per, day_start, day_end):
 #   e               earth orbit eccentricity (0.01671)
 #   axis_norm_degs  angle between the earth's axis and the norm of the orbit in degrees (23.4367)
 #   orb_per         earth orbital period (365.25696)
-#   day_start       day of year to start calculation
-#   day_end         day of year to end calculation
+#   day_nums        numpy array of day numbers
 # outputs:
-#   days           integer list of days based on start and end dates input
-#   decs           declination list in degrees
-def dec_gen(e, axis_norm_degs, orb_per, day_start, day_end):
-    decs = []
-    days = np.arange(day_start, (day_end+1))
+#   decs_degs       declination list in degrees
+def dec_gen(e, axis_norm_degs, orb_per, day_nums):
+    dec_degs = []
     sin_axis_norm = sin(radians(axis_norm_degs))
     ratio360 = 360 / orb_per
     ratio_pi_e = (360 / pi) * e
 
-    for d in days:
-        d_offset = d - 0.5  # calculation based on noon UT of day
-        decs.append(-(asin(sin_axis_norm *
-                           cos(radians(ratio360*(d_offset+10) +
-                               ratio_pi_e*sin(radians(ratio360*(d_offset-2))))))*360/(2*pi)))
+    for d in day_nums:
+        d_offset = d - 1
+        dec_degs.append(-(asin(sin_axis_norm *
+                               cos(radians(ratio360*(d_offset+10) +
+                                   ratio_pi_e*sin(radians(ratio360*(d_offset-2))))))*360/(2*pi)))
 
-    return days, decs
+    return dec_degs
 
 
 # Analemma Data
@@ -100,11 +93,11 @@ def dec_gen(e, axis_norm_degs, orb_per, day_start, day_end):
 #   axis_norm_degs  angle between the earth's axis and the norm of the orbit in degrees (23.4367)
 #   peri_day        calendar day in January of perihelion in decimal/fractional format (~3-5)
 #   orb_per         earth orbital period (365.25696)
+#   day_nums        numpy array of day numbers
 # outputs:
-#   days           integer list of days
-#   decs           declination list in degrees
-#   mins           equation of time list in minutes
-def analemma_gen(e, p_degs, axis_norm_degs, peri_day, orb_per):
-    days, decs = dec_gen(e, axis_norm_degs, orb_per, 1, 366)
-    _, mins = eot_gen(e, p_degs, axis_norm_degs, peri_day, orb_per, 1, 366)
-    return days, decs, mins
+#   eot_mins        equation of time list in minutes
+#   dec_degs        declination list in degrees
+def analemma_gen(e, p_degs, axis_norm_degs, peri_day, orb_per, day_nums):
+    dec_degs = dec_gen(e, axis_norm_degs, orb_per, day_nums)
+    eot_mins = eot_gen(e, p_degs, axis_norm_degs, peri_day, orb_per, day_nums)
+    return eot_mins, dec_degs

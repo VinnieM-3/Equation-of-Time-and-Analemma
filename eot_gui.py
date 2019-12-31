@@ -1,4 +1,5 @@
 import eot
+import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from matplotlib.widgets import Slider, RadioButtons, Button
@@ -10,6 +11,8 @@ peri_day = 3.0888                   # calendar day in January of perihelion (~3-
 p_degs = 12.25                      # projection of the axis of the earth onto the plane of the orbit in degrees
 axis_norm_degs = 23.4367            # angle between the earth's axis and the norm of the orbit
 
+day_nums = np.arange(1.5, 366.5, 1)  # base calculation on noon UT of day
+
 cal_dict = {1: 'Jan 1', 32: 'Feb 1', 60: 'Mar 1', 91: 'Apr 1', 121: 'May 1', 152: 'Jun 1',
             182: 'Jul 1', 213: 'Aug 1', 244: 'Sep 1', 274: 'Oct 1', 305: 'Nov 1', 335: 'Dec 1'}
 
@@ -19,9 +22,10 @@ fig = plt.figure(figsize=(10, 6), num='Equation of Time')
 plt.subplots_adjust(top=.925, left=0.100, right=.950, wspace=0.1)
 gs = GridSpec(22, 20, figure=fig)
 
-eot_x, eot_y = eot.eot_gen(e, p_degs, axis_norm_degs, peri_day, orb_per, 1, 365)
-_, obl_y = eot.obl_gen(p_degs, axis_norm_degs, peri_day, orb_per, 1, 365)
-_, ecc_y = eot.ecc_gen(e, p_degs, peri_day, orb_per, 1, 365)
+eot_x = day_nums
+eot_y = eot.eot_gen(e, p_degs, axis_norm_degs, peri_day, orb_per, day_nums)
+obl_y = eot.obl_gen(p_degs, axis_norm_degs, peri_day, orb_per, day_nums)
+ecc_y = eot.ecc_gen(e, p_degs, peri_day, orb_per, day_nums)
 ax_eot = plt.subplot(gs.new_subplotspec((0, 0), colspan=9, rowspan=10))
 ax_eot.set_title("Equation of Time")
 ax_eot.minorticks_on()
@@ -42,7 +46,8 @@ for d, dt_lbl in cal_dict.items():
     eot_ann_list.append(ann)
 
 
-days, dec_y, min_x = eot.analemma_gen(e, p_degs, axis_norm_degs, peri_day, orb_per)
+day_nums = np.arange(1.5, 367.5, 1)  # base calculation on noon UT of day
+min_x, dec_y = eot.analemma_gen(e, p_degs, axis_norm_degs, peri_day, orb_per, day_nums)
 ax_analemma = plt.subplot(gs.new_subplotspec((0, 12), colspan=9, rowspan=22))
 ax_analemma.set_title("Analemma")
 ax_analemma.minorticks_on()
@@ -67,9 +72,11 @@ def update(val):
     axis_norm_degs = slide_obl_deg.val
     p_degs = slide_sol_peri.val
 
-    eot_x, eot_y = eot.eot_gen(e, p_degs, axis_norm_degs, peri_day, orb_per, 1, 365)
-    _, obl_y = eot.obl_gen(p_degs, axis_norm_degs, peri_day, orb_per, 1, 365)
-    _, ecc_y = eot.ecc_gen(e, p_degs, peri_day, orb_per, 1, 365)
+    day_nums = np.arange(1.5, 366.5, 1)
+    eot_x = day_nums
+    eot_y = eot.eot_gen(e, p_degs, axis_norm_degs, peri_day, orb_per, day_nums)
+    obl_y = eot.obl_gen(p_degs, axis_norm_degs, peri_day, orb_per, day_nums)
+    ecc_y = eot.ecc_gen(e, p_degs, peri_day, orb_per, day_nums)
     eot_line.set_ydata(eot_y)
     ecc_line.set_ydata(ecc_y)
     obl_line.set_ydata(obl_y)
@@ -83,7 +90,8 @@ def update(val):
                               arrowprops=dict(arrowstyle="->", color='red'))
         eot_ann_list.append(ann)
 
-    days, dec_y, min_x = eot.analemma_gen(e, p_degs, axis_norm_degs, peri_day, orb_per)
+    day_nums = np.arange(1.5, 367.5, 1)
+    min_x, dec_y = eot.analemma_gen(e, p_degs, axis_norm_degs, peri_day, orb_per, day_nums)
     analemma_line.set_ydata(dec_y)
     analemma_line.set_xdata(min_x)
 
