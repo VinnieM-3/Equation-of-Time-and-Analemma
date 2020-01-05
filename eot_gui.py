@@ -5,11 +5,19 @@ from matplotlib.gridspec import GridSpec
 from matplotlib.widgets import Slider, RadioButtons, Button
 
 
-e = 0.01671022                      # earth orbit eccentricity
-orb_per = 365.25696                 # earth orbital period
-peri_day = 3.0888                   # calendar day in January of perihelion (~3-5) (decimal/fractional format)
-p_degs = 12.25                      # projection of the axis of the earth onto the plane of the orbit in degrees
-axis_norm_degs = 23.4367            # angle between the earth's axis and the norm of the orbit
+e = 0.01671022              # earth orbit eccentricity
+orb_per = 365.25696         # earth orbital period
+
+# 2019
+# peri_day = 3.222            # calendar day in January of perihelion (~3-5) (decimal/fractional format)
+# p_degs = 12.55              # projection of the axis of the earth onto the plane of the orbit in degrees [2]
+
+# 2020
+peri_day = 5.325            # calendar day in January of perihelion (~3-5) (decimal/fractional format)
+p_degs = 14.40              # projection of the axis of the earth onto the plane of the orbit in degrees [2]
+
+
+axis_norm_degs = 23.4367    # angle between the earth's axis and the norm of the orbit
 
 day_nums = np.arange(1.5, 366.5, 1)  # base calculation on noon UT of day
 

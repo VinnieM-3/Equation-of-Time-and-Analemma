@@ -13,10 +13,10 @@ from math import pi, radians, pow, sin, asin, cos
 #           4142 Munchenstein, Switzerland
 
 
-# equation of time, based on source [2]
+# Equation of time, based on source [2]
 # inputs:
 #   e               earth orbit eccentricity (0.01671)
-#   p_degs          projection of the axis of the earth onto the plane of the orbit in degrees (12.25)
+#   p_degs          projection of the axis of the earth onto the plane of the orbit in degrees (~12-15?)
 #   axis_norm_degs  angle between the earth's axis and the norm of the orbit in degrees (23.4367)
 #   peri_day        calendar day in January of perihelion in decimal/fractional format (~3-5)
 #   orb_per         earth orbital period (365.25696)
@@ -25,7 +25,7 @@ from math import pi, radians, pow, sin, asin, cos
 #   eot_mins        equation of time list in minutes
 def eot_gen(e, p_degs, axis_norm_degs, peri_day, orb_per, day_nums):
     eot_mins = []
-
+    time_mins = (24 * 60) / (2 * pi)
     p = radians(p_degs)
     axis_norm_rads = radians(axis_norm_degs)
     t1 = (axis_norm_rads/2)*(1-4*pow(e, 2))
@@ -38,8 +38,6 @@ def eot_gen(e, p_degs, axis_norm_degs, peri_day, orb_per, day_nums):
     tan4_2e = 2*e*pow(tan2, 2)
     tan2_2e_13_4 = (13/4)*(pow(e, 2))*tan2
     tan6_1_3 = (1/3)*pow(tan2, 3)
-
-    time_mins = (24 * 60) / (2 * pi)
 
     for d in day_nums:
         m = 2*pi*((d - peri_day)/orb_per)
@@ -82,7 +80,6 @@ def dec_gen(e, axis_norm_degs, orb_per, day_nums):
         dec_degs.append(-(asin(sin_axis_norm *
                                cos(radians(ratio360*(d_offset+10) +
                                    ratio_pi_e*sin(radians(ratio360*(d_offset-2))))))*360/(2*pi)))
-
     return dec_degs
 
 
