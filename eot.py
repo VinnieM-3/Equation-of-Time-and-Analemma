@@ -67,6 +67,7 @@ def obl_gen(p, axis_norm_rads, peri_day, orb_per, day_nums):
 #   axis_norm_degs  angle between the earth's axis and the norm of the orbit in degrees (23.4367)
 #   orb_per         earth orbital period (365.25696)
 #   day_nums        numpy array of day numbers
+#   p_degs          projection of the axis of the earth onto the plane of the orbit in degrees
 # outputs:
 #   decs_degs       declination list in degrees
 def dec_gen(e, axis_norm_degs, orb_per, day_nums, p_degs):
