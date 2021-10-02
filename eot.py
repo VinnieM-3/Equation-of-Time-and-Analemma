@@ -67,18 +67,20 @@ def obl_gen(p, axis_norm_rads, peri_day, orb_per, day_nums):
 #   axis_norm_degs  angle between the earth's axis and the norm of the orbit in degrees (23.4367)
 #   orb_per         earth orbital period (365.25696)
 #   day_nums        numpy array of day numbers
+#   p_degs          projection of the axis of the earth onto the plane of the orbit in degrees
 # outputs:
 #   decs_degs       declination list in degrees
-def dec_gen(e, axis_norm_degs, orb_per, day_nums):
+def dec_gen(e, axis_norm_degs, orb_per, day_nums, p_degs):
     dec_degs = []
     sin_axis_norm = sin(radians(axis_norm_degs))
     ratio360 = 360 / orb_per
     ratio_pi_e = (360 / pi) * e
+    days_btw_peri_solst = p_degs / ratio360
 
     for d in day_nums:
         d_offset = d - 1
         dec_degs.append(-(asin(sin_axis_norm *
-                               cos(radians(ratio360*(d_offset+10) +
+                               cos(radians(ratio360*(d_offset+(days_btw_peri_solst-2)) +
                                    ratio_pi_e*sin(radians(ratio360*(d_offset-2))))))*360/(2*pi)))
     return dec_degs
 
@@ -95,6 +97,6 @@ def dec_gen(e, axis_norm_degs, orb_per, day_nums):
 #   eot_mins        equation of time list in minutes
 #   dec_degs        declination list in degrees
 def analemma_gen(e, p_degs, axis_norm_degs, peri_day, orb_per, day_nums):
-    dec_degs = dec_gen(e, axis_norm_degs, orb_per, day_nums)
+    dec_degs = dec_gen(e, axis_norm_degs, orb_per, day_nums, p_degs)
     eot_mins = eot_gen(e, p_degs, axis_norm_degs, peri_day, orb_per, day_nums)
     return eot_mins, dec_degs
