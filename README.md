@@ -1,6 +1,6 @@
 # Equation of Time and Analemma Interactive Graphing Tool
 
-10/02/2021: Fixed issue that was causing eccentricity error.
+### *10/02/2021: Fixed issue that was causing eccentricity error.
 
 Simple Python application to observe effects of obliquity, eccentricity, and the angle between the solstice (winter in northern hemisphere) and perihelion on the equation of time and analemma.  The sliders can be used to vary the obliquity, eccentricity, and solstice/perihelion angle.
 
